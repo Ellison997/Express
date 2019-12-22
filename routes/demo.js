@@ -23,7 +23,6 @@ router.get('/list', async function(req, res, next) {
     let realname = req.query.realname;
     let phone = req.query.phone;
 
-    // 台账列表
     let dbres = await demoDao.queryList(pageSize * (pageIndex - 1), Number(pageSize), realname, phone)
     if (dbres.data != null) {
         res.json({
