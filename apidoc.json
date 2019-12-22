@@ -1,0 +1,13 @@
+{
+    "name": "webserver",
+    "version": "1.0.0",
+    "description": "webserver 接口文档",
+    "title": "webserver API",
+    "url": "",
+    "sampleUrl": "",
+    "forceLanguage": "zh-cn",
+    "template": {
+        "withCompare": true,
+        "withGenerator": true
+    }
+}
