@@ -145,7 +145,6 @@ let upload = multer({ storage: storage })
  */
 router.post('/upload', upload.single('img'), async function(req, res, next) {
     let file = req.file;
-    await utils.createFolder(uploadFolder);
     res.json({
         code: 20000,
         msg: '上传图片',
@@ -170,7 +169,6 @@ router.post('/upload', upload.single('img'), async function(req, res, next) {
  */
 router.post('/uploadFile', upload.single('file'), async function(req, res, next) {
     let file = req.file;
-    await utils.createFolder(uploadFolder);
     res.json({
         code: 20000,
         msg: '上传图片',
