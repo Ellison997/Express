@@ -12,12 +12,11 @@ const jwt = require("jsonwebtoken");
 // let userDao = require('./dao/userDao');
 let fixUnitDao = require('./fdao/unitDao');
 
-
 let multer = require('multer')
 
 
 /**
- * @api {GET} / / 返回前端页面
+ * @api {GET} // 返回前端页面
  * @apiDescription  返回前端页面
  * @apiName return index.html
  * @apiGroup Index
@@ -40,14 +39,10 @@ router.get('/apidoc', function(req, res, next) {
 });
 
 
-
-
 /**
- * @api {POST} /login  WEB 端人员登录（暂时兼容）
- * @apiDescription WEB 端人员登录  （暂时兼容）
+ * @api {POST} /login  WEB 端人员登录
+ * @apiDescription WEB 端人员登录
  * @apiName login
- * @apiParam (body参数) {Number} utype  用户类型   1. 管理员  2. 企业
- * @apiParam (body参数) {Number} usourType  类型（因为要查不同的数据库）  1. 移动  2.固定
  * @apiParam (body参数) {String} uname 用户手机号
  * @apiParam (body参数) {String} pwd 用户密码
  * @apiSampleRequest /login
@@ -57,8 +52,6 @@ router.get('/apidoc', function(req, res, next) {
 router.post('/login', async function(req, res, next) {
     let uname = req.body.uname;
     let pwd = req.body.pwd;
-    let utype = req.body.utype;
-    let usourType = req.body.usourType;
 
     let resData = {
         code: 50000,
@@ -68,13 +61,10 @@ router.post('/login', async function(req, res, next) {
 
     let users = [];
 
-    if (usourType == 1) {
-        // users = await userDao.queryStaffByUNameAndPwd(uname, pwd);
-    } else {
-        users = await fixUnitDao.queryUserByNameAndPhone(uname, utils.md5(pwd));
-    }
+    users = await fixUnitDao.queryUserByNameAndPhone(uname, utils.md5(pwd));
+
     if (users.length > 0) {
-        users[0].username = (users[0].usertype == 1 ? users[0].username : users[0].unitname);
+        users[0].username = users[0].username;
 
         let tokenObj = JSON.parse(JSON.stringify(users[0]));
         let token = jwt.sign(tokenObj,
@@ -88,9 +78,7 @@ router.post('/login', async function(req, res, next) {
             token
         }
     }
-
     res.json(resData);
-
 });
 
 
@@ -111,7 +99,6 @@ router.get('/getUserInfo', async function(req, res, next) {
     } catch (error) {
         log.error('getUserInfo', error)
     }
-
 
     if (user != null) {
         res.json({
