@@ -9,8 +9,7 @@ const { secretKey } = require('./../common/constant');
 const utils = require('./../common/utils');
 let path = require('path');
 const jwt = require("jsonwebtoken");
-// let userDao = require('./dao/userDao');
-let fixUnitDao = require('./fdao/unitDao');
+let demoDao = require('./mysqlDao/demoDao');
 
 let multer = require('multer')
 
@@ -61,7 +60,7 @@ router.post('/login', async function(req, res, next) {
 
     let users = [];
 
-    users = await fixUnitDao.queryUserByNameAndPhone(uname, utils.md5(pwd));
+    users = await demoDao.queryUserByNameAndPhone(uname, utils.md5(pwd));
 
     if (users.length > 0) {
         users[0].username = users[0].username;

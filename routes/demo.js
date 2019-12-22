@@ -1,20 +1,20 @@
 let express = require('express');
 let router = express.Router();
-let utils = require('../../common/utils')
-let log = require('../../common/log')
+let utils = require('../common/utils')
+let log = require('../common/log')
 let multer = require('multer')
-let userDao = require('../fdao/userDao')
+let demoDao = require('./mysqlDao/demoDao')
 
 /**
- * @api {GET} /fuser/list    获取列表
+ * @api {GET} /demo/list    获取列表
  * @apiDescription 获取列表
- * @apiName userList
+ * @apiName demoList
  * @apiParam (query参数) {Number} limit 一页几条数据
  * @apiParam (query参数) {Number} page 第几页
  * @apiParam (query参数) {String} realname 姓名
  * @apiParam (query参数) {String} phone 手机号码
- * @apiSampleRequest /user/list
- * @apiGroup User
+ * @apiSampleRequest /demo/list
+ * @apiGroup demo
  * @apiVersion 1.0.0
  */
 router.get('/list', async function(req, res, next) {
@@ -24,7 +24,7 @@ router.get('/list', async function(req, res, next) {
     let phone = req.query.phone;
 
     // 台账列表
-    let dbres = await userDao.queryUserList(pageSize * (pageIndex - 1), Number(pageSize), realname, phone)
+    let dbres = await demoDao.queryList(pageSize * (pageIndex - 1), Number(pageSize), realname, phone)
     if (dbres.data != null) {
         res.json({
             code: 20000,
@@ -46,22 +46,22 @@ router.get('/list', async function(req, res, next) {
 
 
 /**
- * @api {POST} /fledger/add   添加
+ * @api {POST} /demo/add   添加
  * @apiDescription 添加
- * @apiName addfledger
+ * @apiName add
  * @apiParam (body参数) {String} Ledgername 名称
  * @apiParam (body参数) {Number} Ledgertype 类型
  * @apiParam (body参数) {String} Ledgeraddress 地址
  * @apiParam (body参数) {String} Ledgercontact   联系人
  * @apiParam (body参数) {String} Ledgerphone  联系人电话
- * @apiParam (body参数) {Number} username 名
+ * @apiParam (body参数) {Number} demoname 名
  * @apiParam (body参数) {String} password    密码
  * @apiParam (body参数) {String} photoUrl   照片
- * @apiSampleRequest /fledger/addfledger
- * @apiGroup （fix）Ledger
+ * @apiSampleRequest /demo/add
+ * @apiGroup demo
  * @apiVersion 1.0.0
  */
-router.post('/addfledger', async function(req, res, next) {
+router.post('/add', async function(req, res, next) {
     let Ledger = req.body;
     let dbres = await ledgerDao.insertLedger(Ledger)
     if (dbres != null) {
@@ -82,22 +82,22 @@ router.post('/addfledger', async function(req, res, next) {
 
 
 /**
- * @api {PUT} /fuser/updateEpa   修改
+ * @api {PUT} /demo/update   修改
  * @apiDescription 修改
- * @apiName updateEpa
+ * @apiName update
  * @apiParam (body参数) {String} id  ID
  * @apiParam (body参数) {String} realname  真实姓名
- * @apiParam (body参数) {String} username 名
+ * @apiParam (body参数) {String} demoname 名
  * @apiParam (body参数) {String} phone   手机号
  * @apiParam (body参数) {String} password  密码
- * @apiSampleRequest /fuser/updateEpa
- * @apiGroup （fix）User
+ * @apiSampleRequest /demo/updateEpa
+ * @apiGroup demo
  * @apiVersion 1.0.0
  */
-router.put('/updateEpa', async function(req, res, next) {
-    let fuser = req.body;
+router.put('/update', async function(req, res, next) {
+    let demoBody = req.body;
 
-    let dbres = await userDao.updateEPALogin(fuser)
+    let dbres = await demoDao.update(demoBody)
     if (dbres != null && dbres.changedRows != 0) {
         res.json({
             code: 20000,

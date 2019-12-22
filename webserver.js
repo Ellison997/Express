@@ -11,7 +11,7 @@ const OS = require('os');
 const Cluster = require('cluster');
 // let { createOraclePool, closePoolAndExit } = require('./common/oracle')
 let indexRouter = require('./routes/index');
-let userRouter = require('./routes/fixation/user');
+let demoRouter = require('./routes/demo');
 
 
 
@@ -83,10 +83,8 @@ app.use(function(req, res, next) {
 app.use('/', indexRouter);
 
 
-
-// 固定源
-
-app.use('/fuser', userRouter);
+// 二级路由转发
+app.use('/demo', demoRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
