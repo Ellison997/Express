@@ -117,13 +117,15 @@ router.get('/getUserInfo', async function(req, res, next) {
 });
 
 
-
-let uploadFolder = './uploads/'; // 临时文件夹
+/**
+ * 上传图片配置
+ */
+let imgFolder = './uploads/img'; // 临时文件夹
 
 // 通过 filename 属性定制
-let storage = multer.diskStorage({
+let imgStorage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, uploadFolder); // 保存的路径，备注：需要自己创建
+        cb(null, imgFolder); // 保存的路径，备注：需要自己创建
     },
     filename: function(req, file, cb) {
         // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
@@ -132,7 +134,27 @@ let storage = multer.diskStorage({
 });
 
 // 通过 storage 选项来对 上传行为 进行定制化
-let upload = multer({ storage: storage })
+let imgUpload = multer({ storage: imgStorage })
+
+
+/**
+ * 上传文件配置
+ */
+let fileFolder = './uploads/file'; // 临时文件夹
+
+// 通过 filename 属性定制
+let fileStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, fileFolder); // 保存的路径，备注：需要自己创建
+    },
+    filename: function(req, file, cb) {
+        // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
+        cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[1]);
+    }
+});
+
+// 通过 storage 选项来对 上传行为 进行定制化
+let fileUpload = multer({ storage: fileStorage })
 
 /**
  * @api {POST} /upload    上传图片
@@ -143,7 +165,7 @@ let upload = multer({ storage: storage })
  * @apiGroup Index
  * @apiVersion 1.0.0
  */
-router.post('/upload', upload.single('img'), async function(req, res, next) {
+router.post('/upload', imgUpload.single('img'), async function(req, res, next) {
     let file = req.file;
     res.json({
         code: 20000,
@@ -167,11 +189,11 @@ router.post('/upload', upload.single('img'), async function(req, res, next) {
  * @apiGroup Index
  * @apiVersion 1.0.0
  */
-router.post('/uploadFile', upload.single('file'), async function(req, res, next) {
+router.post('/uploadFile', fileUpload.single('file'), async function(req, res, next) {
     let file = req.file;
     res.json({
         code: 20000,
-        msg: '上传图片',
+        msg: '上传文件',
         data: {
             mimetype: file.mimetype,
             originalname: file.originalname,
