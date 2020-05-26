@@ -1,8 +1,8 @@
 {
-    "name": "webserver",
+    "name": "apiserver",
     "version": "1.0.0",
-    "description": "webserver 接口文档",
-    "title": "webserver API",
+    "description": "apiserver 接口文档",
+    "title": "apiserver API",
     "url": "",
     "sampleUrl": "",
     "forceLanguage": "zh-cn",

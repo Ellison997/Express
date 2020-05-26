@@ -3,7 +3,7 @@ let router = express.Router();
 let utils = require('../common/utils')
 let log = require('../common/log')
 let multer = require('multer')
-let demoDao = require('./mysqlDao/demoDao')
+let demoDao = require('./mdao/demoDao')
 
 /**
  * @api {GET} /demo/list    获取列表
@@ -17,28 +17,27 @@ let demoDao = require('./mysqlDao/demoDao')
  * @apiGroup demo
  * @apiVersion 1.0.0
  */
-router.get('/list', async function(req, res, next) {
+router.get('/list', async function (req, res, next) {
     let pageSize = req.query.limit;
     let pageIndex = req.query.page;
     let realname = req.query.realname;
     let phone = req.query.phone;
+    let resJson = {
+        code: 20000,
+        msg: '获取列表成功',
+        data: null,
+    }
 
     let dbres = await demoDao.queryList(pageSize * (pageIndex - 1), Number(pageSize), realname, phone)
     if (dbres.data != null) {
-        res.json({
-            code: 20000,
-            msg: '获取列表成功',
-            data: dbres.data,
-            count: dbres.count
-        })
+        resJson.data = dbres.data;
+        resJson.count = dbres.count;
     } else {
-        res.json({
-            code: 50000,
-            msg: '获取列表失败',
-            data: null,
-            count: 0
-        })
+        resJson.code = 50000;
+        resJson.msg = '获取列表失败'
+        resJson.count = 0;
     }
+    res.json(resJson)
 
 });
 
@@ -60,23 +59,21 @@ router.get('/list', async function(req, res, next) {
  * @apiGroup demo
  * @apiVersion 1.0.0
  */
-router.post('/add', async function(req, res, next) {
+router.post('/add', async function (req, res, next) {
     let Ledger = req.body;
     let dbres = await ledgerDao.insertLedger(Ledger)
-    if (dbres != null) {
-        res.json({
-            code: 20000,
-            msg: '添加成功',
-            data: dbres
-        })
-    } else {
-        res.json({
-            code: 50000,
-            msg: '添加失败',
-            data: null
-        })
+    let resJson = {
+        code: 20000,
+        msg: '添加成功',
+        data: null
     }
-
+    if (dbres != null) {
+        resJson.data = dbres
+    } else {
+        resJson.code = 50000;
+        resJson.msg = '添加失败'
+    }
+    res.json(resJson)
 });
 
 
@@ -93,23 +90,22 @@ router.post('/add', async function(req, res, next) {
  * @apiGroup demo
  * @apiVersion 1.0.0
  */
-router.put('/update', async function(req, res, next) {
+router.put('/update', async function (req, res, next) {
     let demoBody = req.body;
 
     let dbres = await demoDao.update(demoBody)
-    if (dbres != null && dbres.changedRows != 0) {
-        res.json({
-            code: 20000,
-            msg: '修改成功',
-            data: dbres
-        })
-    } else {
-        res.json({
-            code: 50000,
-            msg: '修改失败',
-            data: null
-        })
+    let resJson = {
+        code: 20000,
+        msg: '修改成功',
+        data: null
     }
+    if (dbres != null && dbres.changedRows != 0) {
+        resJson.data = dbres;
+    } else {
+        resJson.code = 50000;
+        resJson.msg = '修改失败'
+    }
+    res.json(resJson)
 });
 
 module.exports = router;

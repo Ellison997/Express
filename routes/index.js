@@ -9,7 +9,7 @@ const { secretKey } = require('./../common/constant');
 const utils = require('./../common/utils');
 let path = require('path');
 const jwt = require("jsonwebtoken");
-let demoDao = require('./mysqlDao/demoDao');
+let demoDao = require('./mdao/demoDao');
 
 let multer = require('multer')
 
@@ -21,7 +21,7 @@ let multer = require('multer')
  * @apiGroup Index
  * @apiVersion 1.0.0
  */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
     res.sendFile(path.resolve(__dirname, './../dist') + '/index.html')
 });
 
@@ -32,7 +32,7 @@ router.get('/', function(req, res, next) {
  * @apiGroup Index
  * @apiVersion 1.0.0
  */
-router.get('/apidoc', function(req, res, next) {
+router.get('/apidoc', function (req, res, next) {
     log.info(`http://${req.headers.host}/dist/apidoc/index.html`)
     res.redirect(`http://${req.headers.host}/dist/apidoc/index.html`)
 });
@@ -48,7 +48,7 @@ router.get('/apidoc', function(req, res, next) {
  * @apiGroup Index
  * @apiVersion 1.0.0
  */
-router.post('/login', async function(req, res, next) {
+router.post('/login', async function (req, res, next) {
     let uname = req.body.uname;
     let pwd = req.body.pwd;
 
@@ -68,8 +68,8 @@ router.post('/login', async function(req, res, next) {
         let tokenObj = JSON.parse(JSON.stringify(users[0]));
         let token = jwt.sign(tokenObj,
             secretKey, {
-                expiresIn: 60 * 60 * 2 * 24 // 授权时效两天
-            }
+            expiresIn: 60 * 60 * 2 * 24 // 授权时效两天
+        }
         );
         resData.code = 20000;
         resData.msg = '登录成功！';
@@ -90,7 +90,7 @@ router.post('/login', async function(req, res, next) {
  * @apiGroup Index
  * @apiVersion 1.0.0
  */
-router.get('/getUserInfo', async function(req, res, next) {
+router.get('/getUserInfo', async function (req, res, next) {
     let token = utils.getRequestToken(req);
     let user = null;
     try {
@@ -99,19 +99,21 @@ router.get('/getUserInfo', async function(req, res, next) {
         log.error('getUserInfo', error)
     }
 
-    if (user != null) {
-        res.json({
-            code: 20000,
-            msg: '获取人员信息',
-            data: user
-        })
-    } else {
-        res.json({
-            code: 50000,
-            msg: '获取人员信息失败',
-            data: null
-        })
+    let resJson = {
+        code: 20000,
+        msg: '获取人员信息',
+        data: null
     }
+
+    if (user != null) {
+        resJson.data = user
+
+    } else {
+        resJson.code = 50000;
+        resJson.msg = "获取人员信息失败"
+
+    }
+    res.json(resJson)
 
 });
 
@@ -123,10 +125,10 @@ let imgFolder = './uploads/img'; // 临时文件夹
 
 // 通过 filename 属性定制
 let imgStorage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, imgFolder); // 保存的路径，备注：需要自己创建
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
         cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[1]);
     }
@@ -143,10 +145,10 @@ let fileFolder = './uploads/file'; // 临时文件夹
 
 // 通过 filename 属性定制
 let fileStorage = multer.diskStorage({
-    destination: function(req, file, cb) {
+    destination: function (req, file, cb) {
         cb(null, fileFolder); // 保存的路径，备注：需要自己创建
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         // 将保存文件名设置为 字段名 + 时间戳，比如 logo-1478521468943
         cb(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[1]);
     }
@@ -164,7 +166,7 @@ let fileUpload = multer({ storage: fileStorage })
  * @apiGroup Index
  * @apiVersion 1.0.0
  */
-router.post('/upload', imgUpload.single('img'), async function(req, res, next) {
+router.post('/upload', imgUpload.single('img'), async function (req, res, next) {
     let file = req.file;
     res.json({
         code: 20000,
@@ -188,7 +190,7 @@ router.post('/upload', imgUpload.single('img'), async function(req, res, next) {
  * @apiGroup Index
  * @apiVersion 1.0.0
  */
-router.post('/uploadFile', fileUpload.single('file'), async function(req, res, next) {
+router.post('/uploadFile', fileUpload.single('file'), async function (req, res, next) {
     let file = req.file;
     res.json({
         code: 20000,

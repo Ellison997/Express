@@ -1,9 +1,9 @@
 {
-    "name": "webserver_apiserver",
+    "name": "apiserver_apiserver",
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "start": "node ./webserver.js"
+        "start": "node ./apiserver.js"
     },
     "dependencies": {
         "cookie-parser": "~1.4.4",

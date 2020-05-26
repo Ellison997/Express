@@ -1,7 +1,7 @@
 {
     "apps": [{
-        "name": "webserver",
-        "script": "/webserver.js",
+        "name": "apiserver",
+        "script": "/apiserver.js",
         "watch": true,
         "ignore_watch": [
             "node_modules",
